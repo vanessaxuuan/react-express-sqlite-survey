@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {EditButton, StyledButton, StyledDiv, StyledForm, StyledFormWrapper, StyledHeader} from "./Style.jsx"
+import { EditButton, StyledButton, StyledDiv, StyledForm, StyledWrapper, StyledHeader } from "./Style.jsx"
 
 function ResponseDisplay() {
 
@@ -21,21 +21,40 @@ function ResponseDisplay() {
       })
   }, [])
 
-  function displayBox(item) {
-    return (
-      <label>
-        <p>name: {item.name}</p>
-        <p>would_pay: {JSON.stringify(item.would_pay)}</p>
-      </label>
-    )
+  function displayBox(person) {
+    let content = [];
+    const keys = Object.keys(person)
+    const len = keys.length
+    for (let i = 0; i < len; i++) {
+      if (keys[i] === "name") {
+        content.push(<div>name :{person[keys[i]]}</div>)
+      } else {
+        let selected = displaySelected(person[keys[i]])
+        content.push(<p>{keys[i]}: {selected}</p>)
+      }
+    }
+    return content
   }
 
-  function displayResult(items=[]) {
-    items.forEach((item, index) => {
-      responses.push(<StyledDiv>
-        <EditButton id={index} onClick={() =>{handleEdit(index)}}>Edit</EditButton>
-        {displayBox(item)}
-        </StyledDiv>)
+  function displaySelected(field) {
+    const keys = Object.keys(field)
+    const len = keys.length
+    let res = ""
+    for (let i = 0; i < len; i++) {
+      if (field[keys[i]]) {
+        res += keys[i] + ", "
+      } else {
+        // continue
+      }
+    }
+    return res.length === 0 ? "None" : res
+  }
+
+  function displayResult(items = []) {
+    items.forEach((result, index) => {
+      responses.push(<StyledDiv onClick={() => { handleEdit(index) }}>
+        <p>{displayBox(result)}</p>
+      </StyledDiv>)
     })
   }
 
@@ -44,8 +63,12 @@ function ResponseDisplay() {
 
   return (
     <div>
-      <button onClick={() => {navigate(-1)}}>Back</button>
-      <div>{responses}</div>
+      <button onClick={() => { navigate(-1) }}>Back</button>
+      <StyledHeader>Summary</StyledHeader>
+      <StyledWrapper>
+        <label>You may click on the response to view or edit</label>
+        <div>{responses}</div>
+      </StyledWrapper>
     </div>
   )
 }

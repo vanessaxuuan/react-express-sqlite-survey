@@ -31,6 +31,13 @@ export const StyledFormWrapper = styled.div`
   padding: 0 20px;
 `;
 
+export const StyledWrapper = styled.div`
+  display: block;
+  align-items: center;
+  height: 100vh;
+  padding: 0 20px;
+`;
+
 export const StyledDiv = styled.div`
   background-color: #B0C4DE;
   color: #000000;
@@ -38,7 +45,7 @@ export const StyledDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 10vh;
+  height: 30vh;
   padding: 0 20px;
   margin: 10px
 `;
