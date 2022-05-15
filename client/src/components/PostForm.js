@@ -59,7 +59,7 @@ function PostForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }
-    console.log("client sent: ", newResponse.body)
+    //console.log("client sent: ", newResponse.body)
     const response = await fetch(resp_url, newResponse) // post request to server 
     const server_response = await response.json()
     console.log("server replied: ", server_response)
