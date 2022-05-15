@@ -34,8 +34,8 @@ function Home() {
     var i = 0;
     try {
       await list.map(qn => {
-        qnBuffer[i] = qn.question
-        choiceBuffer[i] = cloneArr(qn.choices)
+        qnBuffer[i] = [qn.question, qn.questionType]
+        choiceBuffer[i] = [qn._value, cloneArr(qn.choices)]
         i++;
       })
     } catch (error) {
