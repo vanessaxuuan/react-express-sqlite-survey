@@ -5,6 +5,7 @@ import App from './App';
 import Home from "./components/Home"
 import PostForm from './components/PostForm';
 import Summary from "./components/Summary"
+import ResponseDisplay from './components/ResponseDisplay';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -12,6 +13,7 @@ root.render(
     <Routes>
         <Route exact path="/" element={<App />}/>
         <Route exact path="/Home" element={<Home />}/>
+        <Route exact path="/Result" element={<ResponseDisplay />}/>
         <Route exact path="/Form" element={<PostForm />}/>
         <Route exact path="/Summary" element={<Summary />}/>
         <Route exact path="/Summary/:id" element={<Summary />}/>
