@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from 'react';
 import { qnBuffer, choiceBuffer } from "./Home";
 import { useNavigate } from "react-router-dom";
-import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.js"
+import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.jsx"
 
 function PostForm() {
   const resp_url = "/questions/responses" // to server 

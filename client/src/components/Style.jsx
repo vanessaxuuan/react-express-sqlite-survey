@@ -31,6 +31,18 @@ export const StyledFormWrapper = styled.div`
   padding: 0 20px;
 `;
 
+export const StyledDiv = styled.div`
+  background-color: #B0C4DE;
+  color: #000000;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+  padding: 0 20px;
+  margin: 10px
+`;
+
 export const StyledForm = styled.form`
   width: 100%;
   max-width: 700px;
@@ -67,12 +79,21 @@ export const StyledButton = styled.button`
   box-sizing: border-box;
 `;
 
+export const EditButton = styled.button`
+  display: block;
+  font-size: 0.8rem;
+  margin: 5px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+`;
+
 export const WelcomeButton = styled.button`
   display: block;
   background-color: #f7797d;
   color: #fff;
   font-size: 0.9rem;
-  border: 0;
+  border: 10;
   border-radius: 5px;
   height: 40px;
   padding: 0 20px;

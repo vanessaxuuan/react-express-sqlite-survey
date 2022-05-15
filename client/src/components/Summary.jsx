@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { qnBuffer, choiceBuffer } from "./Home";
-import {StyledButton, StyledForm, StyledFormWrapper, StyledHeader} from "./Style.js"
+import {StyledButton, StyledForm, StyledFormWrapper, StyledHeader} from "./Style.jsx"
 
 function Summary() {
 
   const userId = parseInt(useParams().id)
-  const resp_url = "/questions/responses"
+  const resp_url = `/questions/responses/${userId}`
   const navigate = useNavigate()
   const [enableEdit, setEnableEdit] = useState("disabled") // editing disabled initially 
   const [resp, setResp] = useState({
@@ -53,7 +53,7 @@ function Summary() {
       id: userId,
       body: JSON.stringify(resp)
     }
-    const response = await fetch(resp_url, newResponse) // post request to server 
+    const response = await fetch(resp_url, newResponse) // put request to server 
     const server_response = await response.json()
     console.log("server replied:", server_response)
     setEnableEdit(!enableEdit) // back to initial state 

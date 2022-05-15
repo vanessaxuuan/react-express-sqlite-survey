@@ -1,13 +1,10 @@
 import React from 'react'
 import { useNavigate } from "react-router-dom";
-import { GlobalStyle, WelcomeButton } from "./components/Style.js"
+import { GlobalStyle, WelcomeButton } from "./components/Style.jsx"
 
 function App() {
 
   const navigate = useNavigate()
-  const navigateTo = () => {
-    navigate("/Home")
-  }
 
   return (
     <>
@@ -15,7 +12,8 @@ function App() {
       <nav>
         <ul>
           <div>
-            <WelcomeButton onClick={navigateTo}>Start Survey</WelcomeButton>
+            <WelcomeButton onClick={() => {navigate("/Home")}}>Start Survey</WelcomeButton>
+            <WelcomeButton onClick={() => {navigate("/Result")}}>Responses</WelcomeButton>
           </div>
         </ul>
       </nav>

@@ -54,15 +54,16 @@ router.post("/responses", (req, res) => {
   }
 })
 
-router.put("/responses", (req, res) => {
+router.put("/responses/:id", (req, res) => {
   try {
     // edit database
-    let req_id = req.id
-    responses_server[req_id] = req.body
-    console.log("PUT: server response: ", responses_server[req_id], req.body)
+    let { id } = req.params;
+    id = Number(id);
+    responses_server[id] = req.body
+    console.log("PUT: server response: ", responses_server[id], req.body)
 
     res.json({
-      status: 'success'
+      status: `success edited response ${id}`
     })
   } catch (err) {
     res.status(400).json({
