@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { qnBuffer } from "./Home";
+import { qnBuffer, choiceBuffer } from "./Home";
 import {StyledButton, StyledForm, StyledFormWrapper, StyledHeader} from "./Style.js"
 
 function Summary() {
@@ -63,8 +63,16 @@ function Summary() {
   useEffect(() => {
     fetch(`http://localhost:3500/questions/responses/${userId}`)
       .then(res => res.json())
-      .then(resJson => {setResp(resJson.data)})
+      .then(resJson => {
+        setResp(resJson.data)
+      })
   }, [])
+
+  async function buffer() {
+    const result = await resp
+    console.log("resp fetched: ", result)
+  }
+  buffer()
 
   function handleChange(e) {
     const newData = { ...resp } // copy curr data
@@ -80,49 +88,53 @@ function Summary() {
     setResp(newData)
   }
 
+  /**
+   * Generates HTML script to produce checkbox or radio inputs
+   */
+   function generateCheckBoxes(arr = [], field, _type) {
+    let field_data = resp[field]
+    return (
+      arr.map(item =>
+        <p><input type={_type} name={field} id={field} value={item} disabled={enableEdit} onChange={handleCheckbox} checked={field_data[item]} /> {item}</p>
+      )
+    )
+  }
+
+  /**
+   * Generates HTML script to produce inputs
+   */
+  function generateInput(choices =[], _type) {
+    let field = choices[0] // value
+    switch(_type) {
+      case "0":
+        return(<input type="text" required id={field} value={resp[field]} disabled={enableEdit} onChange={handleChange} />)
+      case "1":
+        return generateCheckBoxes(choices[1], field, "radio")
+      case "2":
+        return generateCheckBoxes(choices[1], field, "checkbox")
+      default:
+        return (<div>Loading...</div>)
+    }
+  }
+
+  let iterator = []; // stores form's script
+  qnBuffer.forEach((item, index) => {
+    iterator.push(<div><label>{item[0]}</label></div>) // question
+    iterator.push(<div>{generateInput(choiceBuffer[index], item[1])}</div>) // choices
+  })
+
   return (
-  <div>
-    <StyledButton onClick={() => {navigate("/")}}>Home</StyledButton>
-    <StyledHeader>Your response</StyledHeader>
-    <StyledFormWrapper>
-      <StyledForm onSubmit={e => handleSubmit(e)}>
-        <div>
-          <label>{qnBuffer[0]}</label>
-          <p><input type="text" id="name" value={resp.name} disabled={enableEdit} onChange={handleChange} /></p>
-        </div>
-        <div>
-          <label>{qnBuffer[1]}</label>
-          <p><input type="checkbox" id="colour" value="Blue" onChange={handleCheckbox} disabled={enableEdit} checked={resp.colour.Blue}/> Blue</p>
-          <p><input type="checkbox" id="colour" value="Red" onChange={handleCheckbox} disabled={enableEdit} checked={resp.colour.Red}/> Red</p>
-          <p><input type="checkbox" id="colour" value="Green" onChange={handleCheckbox} disabled={enableEdit} checked={resp.colour.Green}/> Green</p>
-          <p><input type="checkbox" id="colour" value="Yellow" onChange={handleCheckbox} disabled={enableEdit} checked={resp.colour.Yellow}/> Yellow</p>
-          <p><input type="checkbox" id="colour" value="Purple" onChange={handleCheckbox} disabled={enableEdit} checked={resp.colour.Purple}/> Purple</p>
-          <p><input type="checkbox" id="colour" value="Pink" onChange={handleCheckbox} disabled={enableEdit} checked={resp.colour.Pink}/> Pink</p>
-        </div>
-        <div>
-          <label>{qnBuffer[2]}</label>
-          <p><input type="radio" name="prog_lang" id="prog_lang" value="Python" disabled={enableEdit} checked={resp.prog_lang.Python} onChange={handleCheckbox}/> Python</p>
-          <p><input type="radio" name="prog_lang" id="prog_lang" value="Java" disabled={enableEdit} checked={resp.prog_lang.Java} onChange={handleCheckbox}/> Java</p>
-          <p><input type="radio" name="prog_lang" id="prog_lang" value="Ruby" disabled={enableEdit} checked={resp.prog_lang.Ruby} onChange={handleCheckbox}/> Ruby</p>
-          <p><input type="radio" name="prog_lang" id="prog_lang" value="JavaScript" disabled={enableEdit} checked={resp.prog_lang.JavaScript} onChange={handleCheckbox}/> JavaScript</p>
-          <p><input type="radio" name="prog_lang" id="prog_lang" value="Golang" disabled={enableEdit} checked={resp.prog_lang.Golang} onChange={handleCheckbox}/> Golang</p>
-        </div>
-        <div>
-          <label>{qnBuffer[3]}</label>
-          <p><input type="checkbox" id="languages" value="English" disabled={enableEdit} onChange={handleCheckbox} checked={resp.languages.English}/> English</p>
-          <p><input type="checkbox" id="languages" value="Chinese" disabled={enableEdit} onChange={handleCheckbox} checked={resp.languages.Chinese}/> Chinese</p>
-          <p><input type="checkbox" id="languages" value="Malay" disabled={enableEdit} onChange={handleCheckbox} checked={resp.languages.Malay}/> Malay</p>
-          <p><input type="checkbox" id="languages" value="Tamil" disabled={enableEdit} onChange={handleCheckbox} checked={resp.languages.Tamil}/> Tamil</p>
-          <p><input type="checkbox" id="languages" value="Hindi" disabled={enableEdit} onChange={handleCheckbox} checked={resp.languages.Hindi}/> Hindi</p>
-        </div>
-        <div>
-          <label>{qnBuffer[4]}</label>
-          <p><input type="radio" name="would_pay" id="would_pay" value="Yes" disabled={enableEdit} checked={resp.would_pay.Yes} onChange={handleCheckbox}/> Yes</p>
-          <p><input type="radio" name="would_pay" id="would_pay" value="No" disabled={enableEdit} checked={resp.would_pay.No} onChange={handleCheckbox}/> No</p>
-        </div>
-        <button disabled={enableEdit} type="submit">Submit</button>
-        <button disabled={!enableEdit} onClick={handleEdit}>Edit</button>
-      </StyledForm>
+    <div>
+      <StyledButton onClick={() => navigate("/")}>Home</StyledButton>
+      <StyledHeader>Your response has been submitted</StyledHeader>
+      <StyledFormWrapper>
+        <StyledForm onSubmit={e => handleSubmit(e)}>
+          <div>
+            <label>{iterator}</label>
+          </div>
+          <button disabled={enableEdit} type="submit">submit</button>
+          <button disabled={!enableEdit} onClick={handleEdit}>Edit</button>
+        </StyledForm>
       </StyledFormWrapper>
     </div>
   )
