@@ -90,10 +90,6 @@ function Summary() {
 
   /**
    * Generates HTML script to produce checkbox or radio inputs
-   * @param {*} arr 
-   * @param {*} _id 
-   * @param {*} _type 
-   * @returns HTML script 
    */
    function generateCheckBoxes(arr = [], field, _type) {
     let field_data = resp[field]
@@ -106,9 +102,6 @@ function Summary() {
 
   /**
    * Generates HTML script to produce inputs
-   * @param {*} choices 
-   * @param {*} _type 
-   * @returns HTML script
    */
   function generateInput(choices =[], _type) {
     let field = choices[0] // value
@@ -119,6 +112,8 @@ function Summary() {
         return generateCheckBoxes(choices[1], field, "radio")
       case "2":
         return generateCheckBoxes(choices[1], field, "checkbox")
+      default:
+        return (<div>Loading...</div>)
     }
   }
 
@@ -131,6 +126,7 @@ function Summary() {
   return (
     <div>
       <StyledButton onClick={() => navigate("/")}>Home</StyledButton>
+      <StyledHeader>Your response has been submitted</StyledHeader>
       <StyledFormWrapper>
         <StyledForm onSubmit={e => handleSubmit(e)}>
           <div>

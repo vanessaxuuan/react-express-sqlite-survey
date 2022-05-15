@@ -17,27 +17,13 @@ function Home() {
       .then(resJson => setList(resJson.data))
   }, [])
 
-  function cloneArr(arr = []) {
-    let len = arr.length
-    let temp = []
-    if(len !== 0) {
-      var i = 0;
-      arr.map(item => {
-        temp[i] = item
-        i++
-      })
-    }
-    return temp
-  }
-
   async function buffer() {
     var i = 0;
     try {
-      await list.map(qn => {
+        await list.map(qn => {
         qnBuffer[i] = [qn.question, qn.questionType]
-        choiceBuffer[i] = [qn._value, cloneArr(qn.choices)]
-        i++;
-      })
+        choiceBuffer[i] = [qn._value, qn.choices]
+        i++;})
     } catch (error) {
       console.log("ERROR! List not ready")
       console.log(error)

@@ -69,10 +69,6 @@ function PostForm() {
 
   /**
    * Generates HTML script to produce checkbox or radio inputs
-   * @param {*} arr 
-   * @param {*} _id 
-   * @param {*} _type 
-   * @returns HTML script 
    */
   function generateCheckBoxes(arr = [], _id, _type) {
     let field = data[_id]
@@ -85,9 +81,6 @@ function PostForm() {
 
   /**
    * Generates HTML script to produce inputs
-   * @param {*} choices 
-   * @param {*} _type 
-   * @returns HTML script
    */
   function generateInput(choices =[], _type) {
     let field = choices[0] // value
@@ -98,6 +91,8 @@ function PostForm() {
         return generateCheckBoxes(choices[1], field, "radio")
       case "2":
         return generateCheckBoxes(choices[1], field, "checkbox")
+      default:
+        return (<div>Loading...</div>)
     }
   }
 
