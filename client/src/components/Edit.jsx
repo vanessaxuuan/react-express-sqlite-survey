@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { qnBuffer, choiceBuffer } from "./Home";
+import { qnBuffer, choiceBuffer } from "./Survey";
 import {StyledButton, StyledForm, StyledFormWrapper, StyledHeader} from "./Style.jsx"
 
-function Summary() {
+function Edit() {
 
   const userId = parseInt(useParams().id)
   const resp_url = `/questions/responses/${userId}`
@@ -140,4 +140,4 @@ function Summary() {
   )
 };
   
-export default Summary;
+export default Edit;

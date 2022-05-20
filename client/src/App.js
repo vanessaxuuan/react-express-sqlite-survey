@@ -12,7 +12,7 @@ function App() {
       <nav>
         <ul>
           <div>
-            <WelcomeButton onClick={() => {navigate("/Home")}}>Start Survey</WelcomeButton>
+            <WelcomeButton onClick={() => {navigate("/Survey")}}>Start Survey</WelcomeButton>
             <WelcomeButton onClick={() => {navigate("/Result")}}>Responses</WelcomeButton>
           </div>
         </ul>

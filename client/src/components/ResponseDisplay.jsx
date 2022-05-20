@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { EditButton, StyledButton, StyledDiv, StyledForm, StyledWrapper, StyledHeader } from "./Style.jsx"
+import { StyledDiv, StyledWrapper, StyledHeader } from "./Style.jsx"
 
 function ResponseDisplay() {
 
@@ -8,7 +8,7 @@ function ResponseDisplay() {
   const [list, setList] = useState([])
 
   async function handleEdit(index) {
-    navigate(`/Summary/${index}`) // navigates to summary page 
+    navigate(`/Edit/${index}`) // navigates to summary page 
   }
 
   // fetch data

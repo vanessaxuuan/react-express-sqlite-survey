@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from 'react';
-import { qnBuffer, choiceBuffer } from "./Home";
+import { qnBuffer, choiceBuffer } from "./Survey";
 import { useNavigate } from "react-router-dom";
 import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.jsx"
 
@@ -64,7 +64,8 @@ function PostForm() {
     const server_response = await response.json()
     console.log("server replied: ", server_response)
     const userId = server_response.id
-    navigate(`/Summary/${userId}`) // navigates to summary page 
+    //navigate(`/Summary/${userId}`) // navigates to summary page
+    navigate("/Result")
   }
 
   /**

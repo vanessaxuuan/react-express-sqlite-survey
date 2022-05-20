@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import App from './App';
-import Home from "./components/Home"
+import Survey from "./components/Survey"
 import PostForm from './components/PostForm';
-import Summary from "./components/Summary"
+import Edit from "./components/Edit"
 import ResponseDisplay from './components/ResponseDisplay';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -12,11 +12,11 @@ root.render(
   <Router>
     <Routes>
         <Route exact path="/" element={<App />}/>
-        <Route exact path="/Home" element={<Home />}/>
+        <Route exact path="/Survey" element={<Survey />}/>
         <Route exact path="/Result" element={<ResponseDisplay />}/>
         <Route exact path="/Form" element={<PostForm />}/>
-        <Route exact path="/Summary" element={<Summary />}/>
-        <Route exact path="/Summary/:id" element={<Summary />}/>
+        <Route exact path="/Edit" element={<Edit />}/>
+        <Route exact path="/Edit/:id" element={<Edit />}/>
     </Routes>
   </Router>
 );
