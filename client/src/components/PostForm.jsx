@@ -1,41 +1,84 @@
 import React from "react";
-import { useState } from 'react';
-import { qnBuffer, choiceBuffer } from "./Survey";
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.jsx"
 
 function PostForm() {
   const resp_url = "/questions/responses" // to server 
   const navigate = useNavigate()
+  let iterator = []; // stores form's script
+  const [questions, setQuestions] = useState([])
+  const [choices, setChoices] = useState([])
   const [data, setData] = useState({
     name: " ",
     colour: {
-      Blue: false,
-      Red: false,
-      Green: false,
-      Yellow: false,
-      Purple: false,
-      Pink: false
+      blue: false,
+      red: false,
+      green: false,
+      yellow: false,
+      purple: false,
+      pink: false
     },
     prog_lang: {
-      Python: false,
-      Java: false,
-      Ruby: false,
-      JavaScript: false,
-      Golang: false
+      python: false,
+      java: false,
+      ruby: false,
+      javascript: false,
+      golang: false
     },
     languages: {
-      English: false,
-      Chinese: false,
-      Malay: false,
-      Tamil: false,
-      Hindi: false
+      english: false,
+      chinese: false,
+      malay: false,
+      tamil: false,
+      hindi: false
     },
     would_pay: {
-      Yes: false,
-      No: false
+      yes: false,
+      no: false
     }
   })
+
+  function getField(questionId) {
+    switch (questionId) {
+      case "1":
+        return "name"
+      case "2":
+        return "colour"
+      case "3":
+        return "prog_lang"
+      case "4":
+        return "languages"
+      case "5":
+        return "would_pay"
+      default:
+        return "invalid id"
+    }
+  }
+
+  // fecth questions from server 
+  useEffect(() => {
+    const fetchData = async () => {
+      const _data = await fetch("http://localhost:3500/questions/list")
+      .then(res => res.json())
+      .then(resJson => {setQuestions(resJson)})
+    }
+    
+    fetchData()
+    .catch(console.error)
+  } , [])
+
+    // fecth choices from server 
+    useEffect(() => {
+      const fetchData = async () => {
+        const _data = await fetch("http://localhost:3500/questions/choice")
+        .then(res => res.json())
+        .then(resJson => {setChoices(resJson)})
+      }
+      
+      fetchData()
+      .catch(console.error)
+    } , [])
 
   function handleChange(e) {
     const newData = { ...data } // copy curr data
@@ -59,49 +102,64 @@ function PostForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }
-    //console.log("client sent: ", newResponse.body)
+    console.log("client sent: ", newResponse.body)
     const response = await fetch(resp_url, newResponse) // post request to server 
     const server_response = await response.json()
     console.log("server replied: ", server_response)
-    const userId = server_response.id
-    //navigate(`/Summary/${userId}`) // navigates to summary page
-    navigate("/Result")
+    //navigate("/Result")
   }
 
   /**
    * Generates HTML script to produce checkbox or radio inputs
    */
-  function generateCheckBoxes(arr = [], _id, _type) {
+  function generateCheckBoxes(options, _id, _type) {
     let field = data[_id]
-    return (
-      arr.map(item =>
-        <p><input type={_type} name={_id} id={_id} value={item} onChange={handleCheckbox} checked={field.item} /> {item}</p>
-      )
-    )
+    const keys = Object.keys(options)
+   
+    for(var key in keys) { 
+      const val = options[key]
+      iterator.push(<p><input type={_type} name={_id} id={_id} value={val} onChange={handleCheckbox} checked={field[val]} /> {val}</p>) 
+    }
+  }
+
+  const choice_keys = Object.values(choices)
+  function getOptions(questionId) {
+    let options = []
+    let i = 0;
+    for(var key in choice_keys) {
+      let curr = choices[key]
+      if(String(curr["field2"]) === questionId) {
+        options[i] = curr["field3"]
+        i++
+      }
+    }
+    return options
   }
 
   /**
    * Generates HTML script to produce inputs
    */
-  function generateInput(choices =[], _type) {
-    let field = choices[0] // value
-    switch(_type) {
-      case "0":
-        return(<input type="text" required id={field} value={data.field} onChange={handleChange} />)
-      case "1":
-        return generateCheckBoxes(choices[1], field, "radio")
-      case "2":
-        return generateCheckBoxes(choices[1], field, "checkbox")
+  function generateInput(questionId, _type) {
+    let field = getField(questionId) // value
+
+    switch (_type) {
+      case "textbox":
+        iterator.push(<input type="text" required id={field} value={data.field} onChange={handleChange} />)
+      case "radio":
+        return generateCheckBoxes(getOptions(questionId), field, "radio")
+      case "checkbox":
+        return generateCheckBoxes(getOptions(questionId), field, "checkbox")
       default:
-        return (<div>Loading...</div>)
+        iterator.push(<div>Loading...</div>)
     }
   }
 
-  let iterator = []; // stores form's script
-  qnBuffer.forEach((item, index) => {
-    iterator.push(<div><label>{item[0]}</label></div>) // question
-    iterator.push(<div>{generateInput(choiceBuffer[index], item[1])}</div>) // choices
-  })
+  const qn_keys = Object.keys(questions)
+  for(var key in qn_keys) {
+    const curr_qn = questions[key]
+    iterator.push(<div><label>{curr_qn["field2"]}</label></div>) // question
+    generateInput(curr_qn["field1"], curr_qn["field3"]) // choices
+  }
 
   return (
     <div>
@@ -109,7 +167,7 @@ function PostForm() {
       <StyledFormWrapper>
         <StyledForm onSubmit={e => handleSubmit(e)}>
           <div>
-            <label>{iterator}</label>
+             <label>{iterator}</label>
           </div>
           <StyledButton type="submit">submit</StyledButton>
         </StyledForm>

@@ -1,143 +1,209 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { qnBuffer, choiceBuffer } from "./Survey";
-import {StyledButton, StyledForm, StyledFormWrapper, StyledHeader} from "./Style.jsx"
+import React from "react";
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.jsx"
 
-function Edit() {
-
-  const userId = parseInt(useParams().id)
-  const resp_url = `/questions/responses/${userId}`
+function Edit(userId) {
   const navigate = useNavigate()
-  const [enableEdit, setEnableEdit] = useState("disabled") // editing disabled initially 
-  const [resp, setResp] = useState({
-    name: " ",
-    colour: {
-      Blue: false,
-      Red: false,
-      Green: false,
-      Yellow: false,
-      Purple: false,
-      Pink: false
-    },
-    prog_lang: {
-      Python: false,
-      Java: false,
-      Ruby: false,
-      JavaScript: false,
-      Golang: false
-    },
-    languages: {
-      English: false,
-      Chinese: false,
-      Malay: false,
-      Tamil: false,
-      Hindi: false
-    },
-    would_pay: {
-      Yes: false,
-      No: false
-    }
+  let iterator = []; // stores form's script
+  const [questions, setQuestions] = useState([])
+  const [choices, setChoices] = useState([])
+  const [data, setData] = useState({
+      name: " ",
+      id: userId,
+      blue: false,
+      red: false,
+      green: false,
+      yellow: false,
+      purple: false,
+      pink: false,
+      python: false,
+      java: false,
+      ruby: false,
+      javascript: false,
+      golang: false,
+      english: false,
+      chinese: false,
+      malay: false,
+      tamil: false,
+      hindi: false,
+      yes: false,
+      no: false 
   })
 
-  const handleEdit = () => {
-    setEnableEdit(!enableEdit) // allow editing, activate submit button 
-  }
+    // fetch user's response
+    useEffect(() => {
+      const fetchData = async () => {
+        const _data = await fetch(`http://localhost:3500/questions/responses/${userId}`)
+          .then(res => res.json())
+          .then(resJson => { 
+            console.log(resJson.userData)
+            setData(resJson.userData[0])})
+      }
+  
+      fetchData()
+        .catch(console.error).then(() => {console.log(data)})
+    }, [])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    const newResponse = {
-      method: "PUT",
-      mode: "cors",
-      headers: {'Content-Type': 'application/json'},
-      id: userId,
-      body: JSON.stringify(resp)
-    }
-    const response = await fetch(resp_url, newResponse) // put request to server 
-    const server_response = await response.json()
-    console.log("server replied:", server_response)
-    setEnableEdit(!enableEdit) // back to initial state 
-    alert("Response updated")
-  }
-
+  // fecth questions from server 
   useEffect(() => {
-    fetch(`http://localhost:3500/questions/responses/${userId}`)
-      .then(res => res.json())
-      .then(resJson => {
-        setResp(resJson.data)
-      })
+    const fetchData = async () => {
+      const _data = await fetch("http://localhost:3500/questions/list")
+        .then(res => res.json())
+        .then(resJson => { setQuestions(resJson) })
+    }
+
+    fetchData()
+      .catch(console.error)
   }, [])
 
-  async function buffer() {
-    const result = await resp
-    console.log("resp fetched: ", result)
-  }
-  buffer()
+  // fecth choices from server 
+  useEffect(() => {
+    const fetchData = async () => {
+      const _data = await fetch("http://localhost:3500/questions/choice")
+        .then(res => res.json())
+        .then(resJson => { setChoices(resJson) })
+    }
 
-  function handleChange(e) {
-    const newData = { ...resp } // copy curr data
-    newData[e.target.id] = e.target.value
-    setResp(newData)
-  }
+    fetchData()
+      .catch(console.error)
+  }, [])
 
-  function handleCheckbox(e) {
-    const newData = { ...resp } // copy curr data
-    const updatedField = newData[e.target.id]
-    updatedField[e.target.value] = e.target.checked
-    newData[e.target.id] = updatedField
-    setResp(newData)
+  // function _setData(resp) {
+  //   console.log(resp)
+  //   const keys = Object.keys(resp)
+  //   let len = keys.length
+  //   console.log(`${len} ${typeof(keys[0])}`)
+  //   for (let i = 0; i < len; i++) {
+  //     if (keys[i] === "id") {
+  //       continue
+  //     } else if (keys[i] === "name") {
+  //       data["name"] = resp[keys[i]]
+  //       //handleChange(keys[i], resp[keys[i]])
+  //     } else {
+  //       const field = getResponseField(keys[i])
+  //       handleCheckbox(keys[i], field, resp[keys[i]])
+  //       console.log(resp)
+  //     }
+  //   }
+  //   console.log("done", data)
+  // }
+
+  // function getResponseField(val) {
+    
+  //   const keys = Object.keys(data)
+  //   let curr = ""
+  //   for(var key in keys) {
+  //    // console.log(data[keys[key]])
+  //     if(val in data) {
+  //       curr = key
+  //       break
+  //     }
+  //   }
+  //   return curr
+  // }
+
+  // function handleChange(key, value) {
+  //   const newData = { ...data } // copy curr data
+  //   newData[key] = value
+  //   setData(newData)
+  // }
+
+  // function handleCheckbox(key, field, value) {
+  //   const newData = { ...data } // copy curr data
+  //   const updatedField = newData[field]
+  //   updatedField[key] = value
+  //   newData[field] = updatedField
+  //   setData(newData)
+  // }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    navigate(`/Result`)
   }
 
   /**
    * Generates HTML script to produce checkbox or radio inputs
    */
-   function generateCheckBoxes(arr = [], field, _type) {
-    let field_data = resp[field]
-    return (
-      arr.map(item =>
-        <p><input type={_type} name={field} id={field} value={item} disabled={enableEdit} onChange={handleCheckbox} checked={field_data[item]} /> {item}</p>
-      )
-    )
+  function generateCheckBoxes(options, _id, _type) {
+    const keys = Object.keys(options) 
+
+    for (var key in keys) { 
+      const val = options[key] // e.g. blue
+      iterator.push(<p><input type={_type} name={_id} id={_id} value={val} checked={data[val]} /> {val}</p>)
+    }
+  }
+
+  const choice_keys = Object.values(choices)
+  function getOptions(questionId) {
+    let options = []
+    let i = 0;
+    for (var key in choice_keys) {
+      let curr = choices[key]
+      if (String(curr["field2"]) === questionId) {
+        options[i] = curr["field3"]
+        i++
+      }
+    }
+    return options
+  }
+
+  function getField(_id) {
+    switch (_id) {
+      case"1":
+        return "name"
+      case "2":
+        return "colour"
+      case "3":
+        return "prog_lang"
+      case "4":
+        return "languages"
+      case "5":
+        return "would_pay"
+      default:
+        return "invalid id"
+    }
   }
 
   /**
    * Generates HTML script to produce inputs
    */
-  function generateInput(choices =[], _type) {
-    let field = choices[0] // value
-    switch(_type) {
-      case "0":
-        return(<input type="text" required id={field} value={resp[field]} disabled={enableEdit} onChange={handleChange} />)
-      case "1":
-        return generateCheckBoxes(choices[1], field, "radio")
-      case "2":
-        return generateCheckBoxes(choices[1], field, "checkbox")
+  function generateInput(questionId, _type) {
+    let field = getField(questionId) // value
+
+    switch (_type) {
+      case "textbox":
+        console.log(data)
+        iterator.push(<input type="text" required id={field} value={data[field]} />)
+        break
+      case "radio":
+        return generateCheckBoxes(getOptions(questionId), field, "radio")
+      case "checkbox":
+        return generateCheckBoxes(getOptions(questionId), field, "checkbox")
       default:
-        return (<div>Loading...</div>)
+        iterator.push(<div>Loading...</div>)
     }
   }
 
-  let iterator = []; // stores form's script
-  qnBuffer.forEach((item, index) => {
-    iterator.push(<div><label>{item[0]}</label></div>) // question
-    iterator.push(<div>{generateInput(choiceBuffer[index], item[1])}</div>) // choices
-  })
+  const qn_keys = Object.keys(questions)
+  for (var key in qn_keys) {
+    const curr_qn = questions[key]
+    iterator.push(<div><label>{curr_qn["field2"]}</label></div>) // question
+    generateInput(curr_qn["field1"], curr_qn["field3"]) // choices
+  }
 
   return (
     <div>
-      <StyledButton onClick={() => navigate("/")}>Home</StyledButton>
-      <StyledHeader>Your response has been submitted</StyledHeader>
       <StyledFormWrapper>
         <StyledForm onSubmit={e => handleSubmit(e)}>
           <div>
             <label>{iterator}</label>
           </div>
-          <button disabled={enableEdit} type="submit">submit</button>
-          <button disabled={!enableEdit} onClick={handleEdit}>Edit</button>
+          <StyledButton type="submit">submit</StyledButton>
         </StyledForm>
       </StyledFormWrapper>
     </div>
   )
-};
-  
-export default Edit;
+}
+
+export default Edit
