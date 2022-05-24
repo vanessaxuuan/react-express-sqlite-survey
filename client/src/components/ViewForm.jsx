@@ -1,11 +1,11 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
-import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.jsx"
+import { StyledForm, StyledFormWrapper } from "./Style.jsx"
 
 function ViewForm(userId) {
-  const navigate = useNavigate()
   let iterator = []; // stores form's script
+  const resp_url = `http://localhost:3500/questions/responses/${userId}`
+  const [enable, enableEdit] = useState("disable")
   const [questions, setQuestions] = useState([])
   const [choices, setChoices] = useState([])
   const [data, setData] = useState({
@@ -67,9 +67,25 @@ function ViewForm(userId) {
       .catch(console.error)
   }, [])
 
-  async function handleSubmit(e) {
+  function handleEdit(e) {
     e.preventDefault();
-    navigate(`/Edit/${userId}`)
+    enableEdit(!enable)
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    enableEdit(!enable)
+
+    const newResponse = { // update database
+      method: "PUT",
+      mode: "cors",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }
+    console.log("client sent: ", newResponse.body)
+    const response = await fetch(resp_url, newResponse) // post request to server 
+    const server_response = await response.json()
+    console.log("server replied: ", server_response)
   }
 
   /**
@@ -80,7 +96,7 @@ function ViewForm(userId) {
 
     for (var key in keys) { 
       const val = options[key] // e.g. blue
-      iterator.push(<p><input type={_type} name={_id} id={_id} value={val} disabled="disabled" checked={data[val]} /> {val}</p>)
+      iterator.push(<p><input type={_type} name={_id} id={_id} value={val} disabled={enable} checked={data[val]} /> {val}</p>)
     }
   }
 
@@ -123,7 +139,7 @@ function ViewForm(userId) {
 
     switch (_type) {
       case "textbox":
-        iterator.push(<input type="text" required id={field} value={data[field]} disabled="disabled" />)
+        iterator.push(<input type="text" required id={field} value={data[field]} disabled={enable} />)
         break
       case "radio":
         return generateCheckBoxes(getOptions(questionId), field, "radio")
@@ -148,7 +164,8 @@ function ViewForm(userId) {
           <div>
             <label>{iterator}</label>
           </div>
-          <StyledButton type="submit">edit</StyledButton>
+          <button disabled={!enable} onClick={handleEdit}>edit</button>
+          <button disabled={enable} type="submit">update</button>
         </StyledForm>
       </StyledFormWrapper>
     </div>

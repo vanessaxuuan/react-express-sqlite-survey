@@ -106,7 +106,7 @@ function PostForm() {
     const response = await fetch(resp_url, newResponse) // post request to server 
     const server_response = await response.json()
     console.log("server replied: ", server_response)
-    //navigate("/Result")
+    navigate("/Result")
   }
 
   /**
@@ -145,6 +145,7 @@ function PostForm() {
     switch (_type) {
       case "textbox":
         iterator.push(<input type="text" required id={field} value={data.field} onChange={handleChange} />)
+        break
       case "radio":
         return generateCheckBoxes(getOptions(questionId), field, "radio")
       case "checkbox":

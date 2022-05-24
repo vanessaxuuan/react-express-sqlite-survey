@@ -7,7 +7,6 @@ function ResponseDisplay() {
 
   const navigate = useNavigate()
   const [responses, setResponse] = useState([])
-  const clear_url = "/questions/responses"
 
   // // fetch data
   // useEffect(() => {
@@ -36,7 +35,7 @@ function ResponseDisplay() {
 
   return (
     <div>
-      <button onClick={() => { navigate(-1) }}>Back</button>
+      <button onClick={() => { navigate("/Home") }}>Home</button>
       <StyledHeader>Responses</StyledHeader>
       <StyledWrapper>
         <div>{forms}</div>
