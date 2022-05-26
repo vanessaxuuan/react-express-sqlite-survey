@@ -21,7 +21,7 @@ function ResponseDisplay() {
 
     fetchData()
       .catch(console.error)
-  }, [])
+  }, [id])
 
   curr_id = ids[pos]
   const max = ids.length
