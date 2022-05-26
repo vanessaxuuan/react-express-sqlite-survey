@@ -58,27 +58,22 @@ function PostForm() {
 
   // fecth questions from server 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchQuestion = async () => {
       const _data = await fetch("http://localhost:3500/questions/list")
       .then(res => res.json())
       .then(resJson => {setQuestions(resJson)})
     }
+
+    const fetchChoice = async () => {
+      const _data = await fetch("http://localhost:3500/questions/choice")
+      .then(res => res.json())
+      .then(resJson => {setChoices(resJson)})
+    }
     
-    fetchData()
+    fetchChoice()
+    .then(() => fetchQuestion())
     .catch(console.error)
   } , [])
-
-    // fecth choices from server 
-    useEffect(() => {
-      const fetchData = async () => {
-        const _data = await fetch("http://localhost:3500/questions/choice")
-        .then(res => res.json())
-        .then(resJson => {setChoices(resJson)})
-      }
-      
-      fetchData()
-      .catch(console.error)
-    } , [])
 
   function handleChange(e) {
     const newData = { ...data } // copy curr data

@@ -26,7 +26,7 @@ const getResponse = async (req, res) => {
     .join("would_pay", "responses.id", "would_pay.id")
     .where('responses.id', _id) // select all records with :id
     .then(userData => {
-      console.log("SENDING", userData)
+      console.log("From server: retrieved ", userData)
       res.json({ userData })
     })
     .catch(err => {
