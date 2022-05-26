@@ -1,10 +1,12 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import { StyledForm, StyledFormWrapper } from "./Style.jsx"
+import { useNavigate } from "react-router-dom";
+import { StyledForm, StyledFormWrapper, EmptyForm, GlobalStyle, StyledHeader, WelcomeButton } from "./Style.jsx"
 
 function ViewForm(userId) {
   let iterator = []; // stores form's script
   const resp_url = `http://localhost:3500/questions/responses/${userId}`
+  const navigate = useNavigate()
   const [enable, enableEdit] = useState("disable")
   const [questions, setQuestions] = useState([])
   const [choices, setChoices] = useState([])
@@ -59,6 +61,8 @@ function ViewForm(userId) {
     .catch(console.error)
 
   }, [userId])
+
+  if(userId !== -1) { // data present
 
   function handleChange(e) {
     const newData = { ...data } // copy curr data
@@ -173,6 +177,19 @@ function ViewForm(userId) {
       </StyledFormWrapper>
     </div>
   )
+  } else { // no data recorded
+    return (
+      <>
+        <GlobalStyle />
+        <EmptyForm>
+          <StyledHeader>No data recorded</StyledHeader>
+          <div align="center">
+            <WelcomeButton onClick={() => { navigate("/Survey") }}>Add response</WelcomeButton>
+          </div>
+        </EmptyForm>
+      </>
+    )
+  }
 }
 
 export default ViewForm

@@ -66,6 +66,19 @@ export const StyledForm = styled.form`
   margin-bottom: 2%;
 `;
 
+export const EmptyForm = styled.form`
+  width: 100vh;
+  max-width: 700px;
+  height: 60vh;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
+  margin-left: 30%;
+  margin-top: 5%;
+`;
+
 export const StyledInput = styled.input`
   display: block;
   width: 100%;

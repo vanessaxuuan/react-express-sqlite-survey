@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { StyledHeader } from "./Style.jsx"
+import { StyledHeader, StyledWrapper, WelcomeButton, GlobalStyle, EmptyForm } from "./Style.jsx"
 import ViewForm from "./ViewForm.jsx";
 
 function ResponseDisplay() {
@@ -23,11 +23,13 @@ function ResponseDisplay() {
       .catch(console.error)
   }, [id])
 
-  curr_id = ids[pos]
   const max = ids.length
+  curr_id = max === 0 ? -1 : ids[pos]
+  let delete_invalid = max === 0 ? true : false
   let prev_invalid = pos > 0 ? false : true
   let next_invalid = pos < max - 1 ? false : true
-  let pos_ifDeleted = prev_invalid ? (next_invalid ? 0 : pos + 1) : pos - 1
+  let pos_ifDeleted = prev_invalid ? 0 : pos - 1
+  let message = max === 0 ? " " : `Response ${pos + 1}/${max}`
 
   function handleNavigate(e, next) {
     e.preventDefault()
@@ -52,18 +54,19 @@ function ResponseDisplay() {
     }
   }
 
-  return (
-    <div>
-      <button onClick={() => { navigate("/") }}>Home</button>
-      <div align="center">
-        <StyledHeader>Response {pos + 1}/{max}</StyledHeader>
-        <button disabled={prev_invalid} onClick={e => { handleNavigate(e, pos - 1) }}>Prev</button>
-        <button disabled={next_invalid} onClick={e => { handleNavigate(e, pos + 1) }}>Next</button>
-        <button onClick={handleDelete}>Delete</button>
+    return (
+      <div>
+        <button onClick={() => { navigate("/") }}>Home</button>
+        <div align="center">
+          <StyledHeader>{message}</StyledHeader>
+          <button disabled={prev_invalid} onClick={e => { handleNavigate(e, pos - 1) }}>Prev</button>
+          <button disabled={next_invalid} onClick={e => { handleNavigate(e, pos + 1) }}>Next</button>
+          <button onClick={() => { navigate("/Survey") }}>Add Response</button>
+          <button disabled={delete_invalid} onClick={handleDelete}>Delete</button>
+        </div>
+        <div>{ViewForm(curr_id)}</div>
       </div>
-      <div>{ViewForm(curr_id)}</div>
-    </div>
-  )
+    )
 }
 
 export default ResponseDisplay
