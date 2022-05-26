@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import allResponses, { createResponse, getIds, getResponse, updateResponse } from "../controllers/SurveyControllers.js"
+import allResponses, { createResponse, deleteResponse, getIds, getResponse, updateResponse } from "../controllers/SurveyControllers.js"
 import myKnex from "../db/knex.js"
 
 const router = express.Router();
@@ -43,6 +43,7 @@ router.get("/choice", (req, res) => {
 
 // manage user responses with SurveyControllers
 router.get("/responses/total/ids", getIds) // get number of responses
+router.put("/responses/delete", deleteResponse) // delete a response 
 router.get("/responses", allResponses) // get responses
 router.post("/responses", createResponse) // add new response
 router.get("/responses/:id", getResponse) // view a response

@@ -87,7 +87,7 @@ function ViewForm(userId) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }
-    const response = await fetch(resp_url, newResponse) // post request to server 
+    const response = await fetch(resp_url, newResponse) // put request to server 
     // const server_response = await response.json()
   }
 
