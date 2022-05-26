@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { renderMatches, useNavigate } from "react-router-dom";
 import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.jsx"
 
 function PostForm() {
@@ -118,7 +118,7 @@ function PostForm() {
    
     for(let i = 0; i < len; i++) { 
       const val = options[i]
-      iterator.push(<p><input type={_type} name={_id} id={val} value={val} onChange={handleCheckbox} checked={field[val]} /> {val}</p>) 
+      iterator.push(<p><input type={_type} name={_id} id={_id} value={val} onChange={handleCheckbox} checked={field[val]} /> {val}</p>) 
     }
   }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { StyledWrapper, StyledHeader, StyledButton, nextButton } from "./Style.jsx"
+import { renderMatches, useNavigate, useParams } from "react-router-dom";
+import { StyledWrapper, StyledHeader } from "./Style.jsx"
 import ViewForm from "./ViewForm.jsx";
 
 function ResponseDisplay() {
@@ -8,7 +8,6 @@ function ResponseDisplay() {
   const navigate = useNavigate()
   let { id } = useParams()
   let _id = Number(id)
-  //let forms = []
   const [count, setCount] = useState({})
 
   useEffect(() => {
@@ -26,8 +25,6 @@ function ResponseDisplay() {
   let prev_valid = _id > 1 ? false : true
   let next_valid = _id < max ? false : true
 
-  // forms.push(ViewForm(_id))
-
   return (
     <div>
       <button onClick={() => { navigate("/Home") }}>Home</button>
@@ -36,9 +33,7 @@ function ResponseDisplay() {
         <button disabled={prev_valid} onClick={() => { navigate(`/Result/${_id - 1}`) }}>Prev</button>
         <button disabled={next_valid} onClick={() => { navigate(`/Result/${_id + 1}`) }}>Next</button>
       </div>
-      <StyledWrapper>
-        <div>{ViewForm(_id)}</div>
-      </StyledWrapper>
+      <StyledWrapper>{ViewForm(_id)}</StyledWrapper>
     </div>
   )
 }

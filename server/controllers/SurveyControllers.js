@@ -139,6 +139,7 @@ const updateResponse = async (req, res) => {
   })
 }
 
+// Get number of responses
 const getCount = async (req, res) => {
   myKnex
     .table("responses")
@@ -147,19 +148,5 @@ const getCount = async (req, res) => {
     .then(total => res.json({ total }))
 }
 
-// Clear data
-const resetData = async (req, res) => {
-  myKnex
-    .select('*') // select all 
-    .from('responses')
-    .truncate() // remove the selection
-    .then(() => {
-      res.json({ message: 'Responses cleared.' })
-    })
-    .catch(err => {
-      res.json({ message: `There was an error resetting book list: ${err}.` })
-    })
-}
-
 export default allResponses
-export { createResponse, getResponse, updateResponse, resetData, getCount }
+export { createResponse, getResponse, updateResponse, getCount }
