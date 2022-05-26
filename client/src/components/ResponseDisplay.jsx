@@ -1,74 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { EditButton, StyledButton, StyledDiv, StyledForm, StyledWrapper, StyledHeader } from "./Style.jsx"
+import { renderMatches, useNavigate, useParams } from "react-router-dom";
+import { StyledWrapper, StyledHeader } from "./Style.jsx"
+import ViewForm from "./ViewForm.jsx";
 
 function ResponseDisplay() {
 
   const navigate = useNavigate()
-  const [list, setList] = useState([])
+  let { id } = useParams()
+  let _id = Number(id)
+  const [count, setCount] = useState({})
 
-  async function handleEdit(index) {
-    navigate(`/Summary/${index}`) // navigates to summary page 
-  }
-
-  // fetch data
   useEffect(() => {
-    fetch("http://localhost:3500/questions/responses")
-      .then(res => res.json())
-      .then(resJson => {
-        setList(resJson.data)
-        console.log("display fetched: ", resJson.data)
-      })
+    const fetchData = async () => {
+      const _data = await fetch("http://localhost:3500/questions/responses/count")
+        .then(res => res.json())
+        .then(resJson => setCount(resJson.total))
+    }
+
+    fetchData()
+      .catch(console.error)
   }, [])
 
-  function displayBox(person) {
-    let content = [];
-    const keys = Object.keys(person)
-    const len = keys.length
-    for (let i = 0; i < len; i++) {
-      if (keys[i] === "name") {
-        content.push(<div>name :{person[keys[i]]}</div>)
-      } else {
-        let selected = displaySelected(person[keys[i]])
-        content.push(<p>{keys[i]}: {selected}</p>)
-      }
-    }
-    return content
-  }
-
-  function displaySelected(field) {
-    const keys = Object.keys(field)
-    const len = keys.length
-    let res = ""
-    for (let i = 0; i < len; i++) {
-      if (field[keys[i]]) {
-        res += keys[i] + ", "
-      } else {
-        // continue
-      }
-    }
-    return res.length === 0 ? "None" : res
-  }
-
-  function displayResult(items = []) {
-    items.forEach((result, index) => {
-      responses.push(<StyledDiv onClick={() => { handleEdit(index) }}>
-        <p>{displayBox(result)}</p>
-      </StyledDiv>)
-    })
-  }
-
-  let responses = []
-  displayResult(list)
+  const max = count["count(`id`)"]
+  let prev_valid = _id > 1 ? false : true
+  let next_valid = _id < max ? false : true
 
   return (
     <div>
-      <button onClick={() => { navigate(-1) }}>Back</button>
-      <StyledHeader>Summary</StyledHeader>
-      <StyledWrapper>
-        <label>You may click on the response to view or edit</label>
-        <div>{responses}</div>
-      </StyledWrapper>
+      <button onClick={() => { navigate("/Home") }}>Home</button>
+      <div align="center">
+        <StyledHeader>Response {_id}/{max}</StyledHeader>
+        <button disabled={prev_valid} onClick={() => { navigate(`/Result/${_id - 1}`) }}>Prev</button>
+        <button disabled={next_valid} onClick={() => { navigate(`/Result/${_id + 1}`) }}>Next</button>
+      </div>
+      <StyledWrapper>{ViewForm(_id)}</StyledWrapper>
     </div>
   )
 }

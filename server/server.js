@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import {router} from "./routes/questions.js"
+import {router} from "./routes/question-route.js"
 
 const app = express()
 const port = 3500

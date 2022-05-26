@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from "react-router-dom";
-import { GlobalStyle, WelcomeButton } from "./components/Style.jsx"
+import { GlobalStyle, StyledFormWrapper, WelcomeButton } from "./components/Style.jsx"
 
 function App() {
 
@@ -11,10 +11,10 @@ function App() {
     <GlobalStyle/>
       <nav>
         <ul>
-          <div>
-            <WelcomeButton onClick={() => {navigate("/Home")}}>Start Survey</WelcomeButton>
-            <WelcomeButton onClick={() => {navigate("/Result")}}>Responses</WelcomeButton>
-          </div>
+          <StyledFormWrapper>
+            <WelcomeButton onClick={() => {navigate("/Survey")}}>Start Survey</WelcomeButton>
+            <WelcomeButton onClick={() => {navigate("/Result/1")}}>Responses</WelcomeButton>
+          </StyledFormWrapper>
         </ul>
       </nav>
     </>

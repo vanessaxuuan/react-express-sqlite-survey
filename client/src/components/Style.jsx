@@ -29,6 +29,7 @@ export const StyledFormWrapper = styled.div`
   align-items: center;
   height: 100vh;
   padding: 0 20px;
+  margin-bottom: 10px;
 `;
 
 export const StyledWrapper = styled.div`
