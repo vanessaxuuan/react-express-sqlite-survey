@@ -153,5 +153,14 @@ const getIds = async (req, res) => {
     })
 }
 
+// Delete a response: /responses/delete
+const deleteResponse = async (req, res) => {
+  let _id = req.body["curr_id"]
+  myKnex("responses")
+  .where("id", _id)
+  .del()
+  .then(() => res.json({message: "deleted"}))
+}
+
 export default allResponses
-export { createResponse, getResponse, updateResponse, getIds }
+export { createResponse, getResponse, updateResponse, getIds, deleteResponse }
