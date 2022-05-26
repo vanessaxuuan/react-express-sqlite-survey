@@ -12,7 +12,7 @@ root.render(
     <Routes>
         <Route exact path="/Home" element={<App />}/>
         <Route exact path="/Survey" element={<Survey />}/>
-        <Route exact path="/Result" element={<ResponseDisplay />}/>
+        <Route exact path="/Result/:id" element={<ResponseDisplay />}/>
         <Route exact path="/View/:id" element={<ViewForm />}/>
     </Routes>
   </Router>

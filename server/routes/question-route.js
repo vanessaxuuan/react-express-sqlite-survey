@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import allResponses, { createResponse, getResponse, resetData, updateResponse } from "../controllers/SurveyControllers.js"
+import allResponses, { createResponse, getCount, getResponse, resetData, updateResponse } from "../controllers/SurveyControllers.js"
 import myKnex from "../db/knex.js"
 
 const router = express.Router();
@@ -16,7 +16,7 @@ router.use(cors(corsOptions))
 router.get("/list", (req, res) => {
   try {
     myKnex
-    .select('*').from("questions")
+    .select('*').from("question")
     .then(qns => res.send(qns))
   } catch (err) {
     res.status(400).json({
@@ -29,7 +29,7 @@ router.get("/list", (req, res) => {
 // get list of choices
 router.get("/choice", (req, res) => {
   try {
-    myKnex("choices")
+    myKnex("choice")
     .then(data => { 
       res.send(data)
     })
@@ -45,6 +45,7 @@ router.get("/choice", (req, res) => {
 router.get("/responses", allResponses) // get responses
 router.post("/responses", createResponse) // add new response
 router.put("/responses", resetData) // clear all responses
+router.get("/responses/count", getCount) // get number of responses
 router.get("/responses/:id", getResponse) // view a response
 router.put("/responses/:id", updateResponse) // edit a response
 

@@ -40,7 +40,7 @@ function PostForm() {
   })
 
   function getField(questionId) {
-    switch (questionId) {
+    switch (String(questionId)) {
       case "1":
         return "name"
       case "2":
@@ -102,11 +102,11 @@ function PostForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }
-    console.log("client sent: ", newResponse.body)
     const response = await fetch(resp_url, newResponse) // post request to server 
     const server_response = await response.json()
     console.log("server replied: ", server_response)
-    navigate("/Result")
+    let _id = server_response["count"]["count(`id`)"]
+    navigate(`/Result/${_id}`)
   }
 
   /**
@@ -114,23 +114,23 @@ function PostForm() {
    */
   function generateCheckBoxes(options, _id, _type) {
     let field = data[_id]
-    const keys = Object.keys(options)
+    let len = options.length
    
-    for(var key in keys) { 
-      const val = options[key]
-      iterator.push(<p><input type={_type} name={_id} id={_id} value={val} onChange={handleCheckbox} checked={field[val]} /> {val}</p>) 
+    for(let i = 0; i < len; i++) { 
+      const val = options[i]
+      iterator.push(<p><input type={_type} name={_id} id={val} value={val} onChange={handleCheckbox} checked={field[val]} /> {val}</p>) 
     }
   }
 
-  const choice_keys = Object.values(choices)
   function getOptions(questionId) {
     let options = []
-    let i = 0;
-    for(var key in choice_keys) {
-      let curr = choices[key]
-      if(String(curr["field2"]) === questionId) {
-        options[i] = curr["field3"]
-        i++
+    let j = 0
+    let len = choices.length
+    for(let i = 0; i < len; i++) {
+      let curr = choices[i]
+      if(curr["question_id"] === questionId) {
+        options[j] = curr["option"]
+        j++
       }
     }
     return options
@@ -158,8 +158,8 @@ function PostForm() {
   const qn_keys = Object.keys(questions)
   for(var key in qn_keys) {
     const curr_qn = questions[key]
-    iterator.push(<div><label>{curr_qn["field2"]}</label></div>) // question
-    generateInput(curr_qn["field1"], curr_qn["field3"]) // choices
+    iterator.push(<div><label>{curr_qn["question"]}</label></div>) // question
+    generateInput(curr_qn["id"], curr_qn["type"]) // choices
   }
 
   return (

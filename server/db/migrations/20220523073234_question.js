@@ -1,20 +1,19 @@
 const up = (myKnex) => {
-  return myKnex.schema.createTable("choice", (table) => {
-    table.increments()
-    table.integer("_id") 
-    table.string("option").defaultTo("text")
-  })
-  .createTable("question ", (table) => {
+  return myKnex.schema.createTable("question", (table) => {
     table.increments()
     table.string("question")
     table.string("type")
-    table.string("value")
-    table.integer("choice_id").references("_id").inTable("choice")
+  })
+  .createTable("choice", (table) => {
+    table.increments()
+    table.integer("question_id")
+    table.string("option").defaultTo("text")
   })
 }
 
 const down = (myKnex) => {
-  return myKnex.schema.dropTable("question")
+  return myKnex.schema.dropTableIfExists("choice")
+  .dropTableIfExists("question")
 }
 
 export {up, down} 

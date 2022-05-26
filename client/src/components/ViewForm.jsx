@@ -67,6 +67,18 @@ function ViewForm(userId) {
       .catch(console.error)
   }, [])
 
+  function handleChange(e) {
+    const newData = { ...data } // copy curr data
+    newData[e.target.id] = e.target.value
+    setData(newData)
+  }
+
+  function handleCheckbox(e) {
+    const newData = { ...data } // copy curr data
+    newData[e.target.id] = e.target.checked
+    setData(newData)
+  }
+
   function handleEdit(e) {
     e.preventDefault();
     enableEdit(!enable)
@@ -92,31 +104,31 @@ function ViewForm(userId) {
    * Generates HTML script to produce checkbox or radio inputs
    */
   function generateCheckBoxes(options, _id, _type) {
-    const keys = Object.keys(options) 
-
-    for (var key in keys) { 
-      const val = options[key] // e.g. blue
-      iterator.push(<p><input type={_type} name={_id} id={_id} value={val} disabled={enable} checked={data[val]} /> {val}</p>)
+    let len = options.length
+   
+    for(let i = 0; i < len; i++) {  
+      const val = options[i] // e.g. blue
+      iterator.push(<p><input type={_type} name={_id} id={val} value={val} disabled={enable} checked={data[val]} onChange={handleCheckbox} /> {val}</p>)
     }
   }
 
-  const choice_keys = Object.values(choices)
   function getOptions(questionId) {
     let options = []
-    let i = 0;
-    for (var key in choice_keys) {
-      let curr = choices[key]
-      if (String(curr["field2"]) === questionId) {
-        options[i] = curr["field3"]
-        i++
+    let j = 0
+    let len = choices.length
+    for(let i = 0; i < len; i++) {
+      let curr = choices[i]
+      if(curr["question_id"] === questionId) {
+        options[j] = curr["option"]
+        j++
       }
     }
     return options
   }
 
   function getField(_id) {
-    switch (_id) {
-      case"1":
+    switch (String(_id)) {
+      case "1":
         return "name"
       case "2":
         return "colour"
@@ -139,7 +151,7 @@ function ViewForm(userId) {
 
     switch (_type) {
       case "textbox":
-        iterator.push(<input type="text" required id={field} value={data[field]} disabled={enable} />)
+        iterator.push(<input type="text" required id={field} value={data[field]} disabled={enable} onChange={handleChange} />)
         break
       case "radio":
         return generateCheckBoxes(getOptions(questionId), field, "radio")
@@ -153,8 +165,8 @@ function ViewForm(userId) {
   const qn_keys = Object.keys(questions)
   for (var key in qn_keys) {
     const curr_qn = questions[key]
-    iterator.push(<div><label>{curr_qn["field2"]}</label></div>) // question
-    generateInput(curr_qn["field1"], curr_qn["field3"]) // choices
+    iterator.push(<div><label>{curr_qn["question"]}</label></div>) // question
+    generateInput(curr_qn["id"], curr_qn["type"]) // choices
   }
 
   return (
