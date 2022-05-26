@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import { renderMatches, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.jsx"
 
 function PostForm() {
@@ -105,7 +105,7 @@ function PostForm() {
     const response = await fetch(resp_url, newResponse) // post request to server 
     const server_response = await response.json()
     console.log("server replied: ", server_response)
-    let _id = server_response["count"]["count(`id`)"]
+    const _id = await server_response["count"]["count(`id`)"] - 1
     navigate(`/Result/${_id}`)
   }
 

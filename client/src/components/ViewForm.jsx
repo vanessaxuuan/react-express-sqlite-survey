@@ -5,45 +5,48 @@ import { StyledForm, StyledFormWrapper } from "./Style.jsx"
 function ViewForm(userId) {
   let iterator = []; // stores form's script
   const resp_url = `http://localhost:3500/questions/responses/${userId}`
+  const [ready, setReady] = useState(false)
   const [enable, enableEdit] = useState("disable")
   const [questions, setQuestions] = useState([])
   const [choices, setChoices] = useState([])
   const [data, setData] = useState({
-      name: " ",
-      id: userId,
-      blue: false,
-      red: false,
-      green: false,
-      yellow: false,
-      purple: false,
-      pink: false,
-      python: false,
-      java: false,
-      ruby: false,
-      javascript: false,
-      golang: false,
-      english: false,
-      chinese: false,
-      malay: false,
-      tamil: false,
-      hindi: false,
-      yes: false,
-      no: false 
+    name: " ",
+    id: userId,
+    blue: false,
+    red: false,
+    green: false,
+    yellow: false,
+    purple: false,
+    pink: false,
+    python: false,
+    java: false,
+    ruby: false,
+    javascript: false,
+    golang: false,
+    english: false,
+    chinese: false,
+    malay: false,
+    tamil: false,
+    hindi: false,
+    yes: false,
+    no: false
   })
 
-    // fetch user's response
-    useEffect(() => {
-      const fetchData = async () => {
-        const _data = await fetch(`http://localhost:3500/questions/responses/${userId}`)
-          .then(res => res.json())
-          .then(resJson => setData(resJson.userData[0]))
-      }
-  
-      fetchData()
-        .catch(console.error)
-    }, [])
+  // fetch user's response
+  useEffect(() => {
+    const fetchData = async () => {
+      const _data = await fetch(`http://localhost:3500/questions/responses/${userId}`)
+        .then(res => res.json())
+        .then(resJson => {
+          setData(resJson.userData[0], () => setReady(true))
+          })
+        }
 
-  // fecth questions from server 
+    fetchData()
+      .catch(console.error)
+  }, [userId])
+
+  // fetch questions from server 
   useEffect(() => {
     const fetchData = async () => {
       const _data = await fetch("http://localhost:3500/questions/list")
@@ -55,7 +58,7 @@ function ViewForm(userId) {
       .catch(console.error)
   }, [])
 
-  // fecth choices from server 
+  // fetch choices from server 
   useEffect(() => {
     const fetchData = async () => {
       const _data = await fetch("http://localhost:3500/questions/choice")
@@ -103,8 +106,8 @@ function ViewForm(userId) {
    */
   function generateCheckBoxes(options, _id, _type) {
     let len = options.length
-   
-    for(let i = 0; i < len; i++) {  
+
+    for (let i = 0; i < len; i++) {
       const val = options[i] // e.g. blue
       iterator.push(<p><input type={_type} name={_id} id={val} value={val} disabled={enable} checked={data[val]} onChange={handleCheckbox} /> {val}</p>)
     }
@@ -114,9 +117,9 @@ function ViewForm(userId) {
     let options = []
     let j = 0
     let len = choices.length
-    for(let i = 0; i < len; i++) {
+    for (let i = 0; i < len; i++) {
       let curr = choices[i]
-      if(curr["question_id"] === questionId) {
+      if (curr["question_id"] === questionId) {
         options[j] = curr["option"]
         j++
       }
@@ -160,26 +163,28 @@ function ViewForm(userId) {
     }
   }
 
-  const qn_keys = Object.keys(questions)
-  for (var key in qn_keys) {
-    const curr_qn = questions[key]
-    iterator.push(<div><label>{curr_qn["question"]}</label></div>) // question
-    generateInput(curr_qn["id"], curr_qn["type"]) // choices
+  if (ready) { // to render
+    console.log("ViewForm render", ready)
+    const qn_keys = Object.keys(questions)
+    for (var key in qn_keys) {
+      const curr_qn = questions[key]
+      iterator.push(<div><label>{curr_qn["question"]}</label></div>) // question
+      generateInput(curr_qn["id"], curr_qn["type"]) // choices
+    }
+    return (
+      <div>
+        <StyledFormWrapper>
+          <StyledForm onSubmit={e => handleSubmit(e)}>
+            <div>
+              <label>{iterator}</label>
+            </div>
+            <button disabled={!enable} onClick={handleEdit}>edit</button>
+            <button disabled={enable} type="submit">update</button>
+          </StyledForm>
+        </StyledFormWrapper>
+      </div>
+    )
   }
-
-  return (
-    <div>
-      <StyledFormWrapper>
-        <StyledForm onSubmit={e => handleSubmit(e)}>
-          <div>
-            <label>{iterator}</label>
-          </div>
-          <button disabled={!enable} onClick={handleEdit}>edit</button>
-          <button disabled={enable} type="submit">update</button>
-        </StyledForm>
-      </StyledFormWrapper>
-    </div>
-  )
 }
 
 export default ViewForm
