@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import { renderMatches, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { StyledButton, StyledForm, StyledFormWrapper } from "./Style.jsx"
 
 function PostForm() {
@@ -58,27 +58,22 @@ function PostForm() {
 
   // fecth questions from server 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchQuestion = async () => {
       const _data = await fetch("http://localhost:3500/questions/list")
       .then(res => res.json())
       .then(resJson => {setQuestions(resJson)})
     }
+
+    const fetchChoice = async () => {
+      const _data = await fetch("http://localhost:3500/questions/choice")
+      .then(res => res.json())
+      .then(resJson => {setChoices(resJson)})
+    }
     
-    fetchData()
+    fetchChoice()
+    .then(() => fetchQuestion())
     .catch(console.error)
   } , [])
-
-    // fecth choices from server 
-    useEffect(() => {
-      const fetchData = async () => {
-        const _data = await fetch("http://localhost:3500/questions/choice")
-        .then(res => res.json())
-        .then(resJson => {setChoices(resJson)})
-      }
-      
-      fetchData()
-      .catch(console.error)
-    } , [])
 
   function handleChange(e) {
     const newData = { ...data } // copy curr data
@@ -105,7 +100,7 @@ function PostForm() {
     const response = await fetch(resp_url, newResponse) // post request to server 
     const server_response = await response.json()
     console.log("server replied: ", server_response)
-    let _id = server_response["count"]["count(`id`)"]
+    const _id = await server_response["count"]["count(`id`)"] - 1
     navigate(`/Result/${_id}`)
   }
 

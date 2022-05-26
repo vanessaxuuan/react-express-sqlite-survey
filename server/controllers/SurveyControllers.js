@@ -26,6 +26,7 @@ const getResponse = async (req, res) => {
     .join("would_pay", "responses.id", "would_pay.id")
     .where('responses.id', _id) // select all records with :id
     .then(userData => {
+      console.log("From server: retrieved ", userData)
       res.json({ userData })
     })
     .catch(err => {
@@ -139,14 +140,18 @@ const updateResponse = async (req, res) => {
   })
 }
 
-// Get number of responses
-const getCount = async (req, res) => {
+// Get number of responses: /responses/total/ids
+const getIds = async (req, res) => {
   myKnex
-    .table("responses")
-    .count("id")
-    .first()
-    .then(total => res.json({ total }))
+    .select("id")
+    .from("responses")
+    .then(resp => {
+      let flatten = resp.map(item => { return Object.values(item)[0] })
+      res.json({data: flatten})
+    }).catch(err => {
+      res.json(err)
+    })
 }
 
 export default allResponses
-export { createResponse, getResponse, updateResponse, getCount }
+export { createResponse, getResponse, updateResponse, getIds }

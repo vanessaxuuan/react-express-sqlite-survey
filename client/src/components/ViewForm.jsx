@@ -9,63 +9,56 @@ function ViewForm(userId) {
   const [questions, setQuestions] = useState([])
   const [choices, setChoices] = useState([])
   const [data, setData] = useState({
-      name: " ",
-      id: userId,
-      blue: false,
-      red: false,
-      green: false,
-      yellow: false,
-      purple: false,
-      pink: false,
-      python: false,
-      java: false,
-      ruby: false,
-      javascript: false,
-      golang: false,
-      english: false,
-      chinese: false,
-      malay: false,
-      tamil: false,
-      hindi: false,
-      yes: false,
-      no: false 
+    name: '',
+    id: userId,
+    blue: false,
+    red: false,
+    green: false,
+    yellow: false,
+    purple: false,
+    pink: false,
+    python: false,
+    java: false,
+    ruby: false,
+    javascript: false,
+    golang: false,
+    english: false,
+    chinese: false,
+    malay: false,
+    tamil: false,
+    hindi: false,
+    yes: false,
+    no: false
   })
 
-    // fetch user's response
-    useEffect(() => {
-      const fetchData = async () => {
-        const _data = await fetch(`http://localhost:3500/questions/responses/${userId}`)
-          .then(res => res.json())
-          .then(resJson => setData(resJson.userData[0]))
-      }
-  
-      fetchData()
-        .catch(console.error)
-    }, [])
-
-  // fecth questions from server 
+  // fetch user's response
   useEffect(() => {
     const fetchData = async () => {
+      const _data = await fetch(`http://localhost:3500/questions/responses/${userId}`)
+        .then(res => res.json())
+        .then(resJson => {
+          setData(resJson.userData[0])
+        })
+    }
+
+    const fetchQn = async () => {
       const _data = await fetch("http://localhost:3500/questions/list")
         .then(res => res.json())
         .then(resJson => { setQuestions(resJson) })
     }
 
-    fetchData()
-      .catch(console.error)
-  }, [])
-
-  // fecth choices from server 
-  useEffect(() => {
-    const fetchData = async () => {
+    const fetchChoice = async () => {
       const _data = await fetch("http://localhost:3500/questions/choice")
         .then(res => res.json())
         .then(resJson => { setChoices(resJson) })
     }
 
     fetchData()
-      .catch(console.error)
-  }, [])
+    .then(() => fetchQn())
+    .then(() => fetchChoice())
+    .catch(console.error)
+
+  }, [userId])
 
   function handleChange(e) {
     const newData = { ...data } // copy curr data
@@ -103,8 +96,8 @@ function ViewForm(userId) {
    */
   function generateCheckBoxes(options, _id, _type) {
     let len = options.length
-   
-    for(let i = 0; i < len; i++) {  
+
+    for (let i = 0; i < len; i++) {
       const val = options[i] // e.g. blue
       iterator.push(<p><input type={_type} name={_id} id={val} value={val} disabled={enable} checked={data[val]} onChange={handleCheckbox} /> {val}</p>)
     }
@@ -114,9 +107,9 @@ function ViewForm(userId) {
     let options = []
     let j = 0
     let len = choices.length
-    for(let i = 0; i < len; i++) {
+    for (let i = 0; i < len; i++) {
       let curr = choices[i]
-      if(curr["question_id"] === questionId) {
+      if (curr["question_id"] === questionId) {
         options[j] = curr["option"]
         j++
       }

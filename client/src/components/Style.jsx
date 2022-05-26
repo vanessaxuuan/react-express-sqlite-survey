@@ -27,16 +27,19 @@ export const StyledFormWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   padding: 0 20px;
+  margin-top: 10px;
   margin-bottom: 10px;
 `;
 
 export const StyledWrapper = styled.div`
-  display: block;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   padding: 0 20px;
+  margin-bottom: 10px;
 `;
 
 export const StyledDiv = styled.div`
@@ -54,11 +57,13 @@ export const StyledDiv = styled.div`
 export const StyledForm = styled.form`
   width: 100%;
   max-width: 700px;
+  height: 100%;
   padding: 40px;
   background-color: #fff;
   border-radius: 10px;
   box-sizing: border-box;
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2%;
 `;
 
 export const StyledInput = styled.input`
@@ -106,6 +111,7 @@ export const WelcomeButton = styled.button`
   height: 40px;
   padding: 0 20px;
   cursor: pointer;
+  margin-top: 25%;
   box-sizing: border-box;
 `;
 
@@ -126,10 +132,11 @@ export const StyledFieldset = styled.fieldset`
 `;
 
 export const StyledHeader = styled.header`
-  min-height: 10vh;
+  min-height: 10%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 2%;
   font-size: calc(10px + 2vmin);
   color: black;
 `;

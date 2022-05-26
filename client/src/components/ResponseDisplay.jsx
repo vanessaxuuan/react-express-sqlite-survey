@@ -1,39 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { renderMatches, useNavigate, useParams } from "react-router-dom";
-import { StyledWrapper, StyledHeader } from "./Style.jsx"
+import { useNavigate, useParams } from "react-router-dom";
+import { StyledHeader } from "./Style.jsx"
 import ViewForm from "./ViewForm.jsx";
 
 function ResponseDisplay() {
 
+  let { id } = useParams() // indexed at 0
+  let curr_id = 0
+  let pos = Number(id)
+  const [ids, setIds] = useState([])
   const navigate = useNavigate()
-  let { id } = useParams()
-  let _id = Number(id)
-  const [count, setCount] = useState({})
 
+  // fetch list of id from responses
   useEffect(() => {
     const fetchData = async () => {
-      const _data = await fetch("http://localhost:3500/questions/responses/count")
+      const _data = await fetch("http://localhost:3500/questions/responses/total/ids")
         .then(res => res.json())
-        .then(resJson => setCount(resJson.total))
+        .then(resJson => setIds(resJson.data))
     }
 
     fetchData()
       .catch(console.error)
   }, [])
 
-  const max = count["count(`id`)"]
-  let prev_valid = _id > 1 ? false : true
-  let next_valid = _id < max ? false : true
+  curr_id = ids[pos]
+  const max = ids.length
+  let prev_invalid = pos > 0 ? false : true
+  let next_invalid = pos < max - 1 ? false : true
+
+  function handleNavigate(e, next) {
+    e.preventDefault()
+    navigate(`/Result/${next}`)
+  }
 
   return (
     <div>
       <button onClick={() => { navigate("/") }}>Home</button>
       <div align="center">
-        <StyledHeader>Response {_id}/{max}</StyledHeader>
-        <button disabled={prev_valid} onClick={() => { navigate(`/Result/${_id - 1}`) }}>Prev</button>
-        <button disabled={next_valid} onClick={() => { navigate(`/Result/${_id + 1}`) }}>Next</button>
+        <StyledHeader>Response {pos + 1}/{max}</StyledHeader>
+        <button disabled={prev_invalid} onClick={e => { handleNavigate(e, pos - 1) }}>Prev</button>
+        <button disabled={next_invalid} onClick={e => { handleNavigate(e, pos + 1) }}>Next</button>
       </div>
-      <StyledWrapper>{ViewForm(_id)}</StyledWrapper>
+      <div>{ViewForm(curr_id)}</div>
     </div>
   )
 }
