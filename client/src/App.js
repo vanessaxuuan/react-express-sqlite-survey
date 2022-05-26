@@ -13,7 +13,7 @@ function App() {
         <ul>
           <StyledFormWrapper>
             <WelcomeButton onClick={() => {navigate("/Survey")}}>Start Survey</WelcomeButton>
-            <WelcomeButton onClick={() => {navigate("/Result/1")}}>Responses</WelcomeButton>
+            <WelcomeButton onClick={() => {navigate("/Result/1")}}>Summary</WelcomeButton>
           </StyledFormWrapper>
         </ul>
       </nav>

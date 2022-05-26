@@ -27,7 +27,7 @@ function ResponseDisplay() {
 
   return (
     <div>
-      <button onClick={() => { navigate("/Home") }}>Home</button>
+      <button onClick={() => { navigate("/") }}>Home</button>
       <div align="center">
         <StyledHeader>Response {_id}/{max}</StyledHeader>
         <button disabled={prev_valid} onClick={() => { navigate(`/Result/${_id - 1}`) }}>Prev</button>
